@@ -1,0 +1,8 @@
+# This file is where you define your pipelines. You can define multiple.
+# For more information on multiple pipelines, see the documentation:
+# https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html
+# 단일 logstash 인스턴스로 여러개의 파이프라인 실행 가능
+
+#- pipeline.id: post
+#  path.config: "/usr/share/logstash/pipeline/logstash.conf"
+#  pipeline.workers: 3

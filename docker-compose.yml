@@ -1,0 +1,76 @@
+version: "3"
+
+services:
+  mysql:
+    image: mariadb
+    restart: always
+    #volumes:
+    #  - ./mysql_data:/var/lib/mariadb/data/
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+    #  env_file:
+    #    - ./settings/prod/.env.db
+    ports:
+      - "3306:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+  elasticsearch:
+    build: elasticsearch
+    restart: always
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes: # source 이름이 esdata
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      #- elasticsearch:/usr/share/elasticsearch/data
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: fuding
+
+  logstash:
+    build: logstash
+    restart: always
+    ports: # 수정(하나만 남겨도 될듯)
+      - "5001:5001"
+    volumes: # jdbc 추가
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+    env_file:
+      - .env
+
+  #kibana:
+  #  build: kibana
+  #  restart: always
+  #  volumes:
+  #    - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+  #  ports:
+  #    - "5601:5601"
+
+  #  depends_on:
+  #    - elasticsearch
+
+  # pgadmin (db관리) 컨테이너
+  #pgadmin:
+  #  image: dpage/pgadmin4
+  #  env_file:
+  #    - ./.env.pgadmin
+  #  ports:
+  #    - 5050:80
+
+  #indexer:
+  # build: ELK/indexer/
+  # restart: on-failure
+  # depends_on:
+  #  - elasticsearch
+  # container_name: indexer
+
+  #volumes:
+#  elasticsearch:
+#  mysql_data:
