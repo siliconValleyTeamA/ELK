@@ -3,7 +3,7 @@ version: "3"
 services:
   # mysql container
   mysql:
-    image: mariadb
+    image: mariadb:10.5.8-focal
     restart: always
     volumes:
       - ./mysql_data:/var/lib/mariadb/data/
@@ -63,6 +63,8 @@ services:
   # pgadmin(manage db) container
   pgadmin:
     image: dpage/pgadmin4
+    #command: COPY ./companies.csv usr/src/companies.csv
+
     env_file:
       - ./.env.pgadmin
     ports:
