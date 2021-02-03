@@ -27,7 +27,7 @@ services:
       - "9300:9300"
     volumes: # source 이름이 esdata
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      #- elasticsearch:/usr/share/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       ELASTIC_PASSWORD: fuding
@@ -38,7 +38,7 @@ services:
     restart: always
     ports:
       - "5001:5001"
-    volumes: # jdbc 추가
+    volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
       - ./logstash/.logstash_jdbc_last_run:/root/.logstash_jdbc_last_run
@@ -47,7 +47,7 @@ services:
     depends_on:
       - elasticsearch
     env_file:
-      - .env
+      - ./.env
 
   # kibana container
   kibana:
@@ -60,23 +60,6 @@ services:
     depends_on:
       - elasticsearch
 
-  # pgadmin(manage db) container
-  pgadmin:
-    image: dpage/pgadmin4
-    #command: COPY ./companies.csv usr/src/companies.csv
-
-    env_file:
-      - ./.env.pgadmin
-    ports:
-      - 5050:80
-
-  #indexer:
-  # build: ELK/indexer/
-  # restart: on-failure
-  # depends_on:
-  #  - elasticsearch
-  # container_name: indexer
-
 volumes:
-  #  elasticsearch:
+  esdata:
   mysql_data:
