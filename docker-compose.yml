@@ -7,11 +7,8 @@ services:
     restart: always
     volumes:
       - ./mysql_data:/var/lib/mariadb/data/
-    environment:
-      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
-      MYSQL_DATABASE: "${DB_DATABASE}"
-    #  env_file:
-    #    - ./settings/prod/.env.db
+    env_file:
+      - ./settings/.env.db
     ports:
       - "3306:3306"
     command:
@@ -25,12 +22,11 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-    volumes: # source 이름이 esdata
+    volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - esdata:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTIC_PASSWORD: fuding
 
   # logstash container
   logstash:
@@ -44,10 +40,10 @@ services:
       - ./logstash/.logstash_jdbc_last_run:/root/.logstash_jdbc_last_run
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    env_file:
+      - ./settings/.env.logstash
     depends_on:
       - elasticsearch
-    env_file:
-      - ./.env
 
   # kibana container
   kibana:
