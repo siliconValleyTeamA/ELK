@@ -1,4 +1,7 @@
-version: "3"
+version: "3.8"
+networks:
+  app-tier:
+    driver: bridge
 
 services:
   # mysql container
@@ -24,7 +27,6 @@ services:
       - "9300:9300"
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - esdata:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
 
@@ -37,13 +39,12 @@ services:
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
-      - ./logstash/.logstash_jdbc_last_run:/root/.logstash_jdbc_last_run
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    env_file:
-      - ./settings/.env.logstash
     depends_on:
       - elasticsearch
+    env_file:
+      - ./settings/.env.logstash
 
   # kibana container
   kibana:
@@ -57,5 +58,4 @@ services:
       - elasticsearch
 
 volumes:
-  esdata:
   mysql_data:
