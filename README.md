@@ -58,7 +58,7 @@ cd ELK
 ## Kibana Example
 ![Kibana](https://user-images.githubusercontent.com/67114268/106853290-d10cc980-66fc-11eb-8222-82decc5099e5.gif)
 
---
+---
 ## Details
 Based on the Docker images:
 
